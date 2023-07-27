@@ -6,15 +6,15 @@ import (
 	"testing"
 )
 
-func checkParserErrors(t *testing.T,p *Parser){
+func checkParserErrors(t *testing.T, p *Parser) {
 	errors := p.Errors()
-	if len(errors) == 0{
+	if len(errors) == 0 {
 		return
 	}
 
-	t.Errorf("parser has %d errors",len(errors))
-	for _,msg := range errors{
-		t.Errorf("parser error: %q",msg)
+	t.Errorf("parser has %d errors", len(errors))
+	for _, msg := range errors {
+		t.Errorf("parser error: %q", msg)
 	}
 	t.FailNow()
 }
@@ -34,11 +34,11 @@ func TestLetStatements(t *testing.T) {
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
 	}
-	if len(program.Statements) != 3{
-		t.Fatalf("program.Statements doesnot contains 3 statements. got = %d\n",len(program.Statements))
+	if len(program.Statements) != 3 {
+		t.Fatalf("program.Statements doesnot contains 3 statements. got = %d\n", len(program.Statements))
 	}
 
-	tests := []struct{
+	tests := []struct {
 		expectedIdentifier string
 	}{
 		{"x"},
@@ -46,17 +46,17 @@ func TestLetStatements(t *testing.T) {
 		{"foobar"},
 	}
 
-	for i, tt := range tests{
+	for i, tt := range tests {
 		stmt := program.Statements[i]
-		if !testLetStatement(t, stmt,tt.expectedIdentifier){
+		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
 			return
 		}
 	}
 }
 
-func TestReturnStatements(t *testing.T){
-	input := 
-	`
+func TestReturnStatements(t *testing.T) {
+	input :=
+		`
 	return 5;
 	return 10;
 	return 993322;
@@ -67,37 +67,37 @@ func TestReturnStatements(t *testing.T){
 
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
-	if len(program.Statements) != 3{
-		t.Fatalf("program.Statements does not contain 3 statements. got=%d",len(program.Statements))
+	if len(program.Statements) != 3 {
+		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
 	}
 
-	for _,stmt := range program.Statements{
+	for _, stmt := range program.Statements {
 		returnStmt, ok := stmt.(*ast.ReturnStatement)
-		if !ok{
-			t.Errorf("stmt not *ast.returnStatement. got=%T",stmt)
+		if !ok {
+			t.Errorf("stmt not *ast.returnStatement. got=%T", stmt)
 			continue
 		}
 
-		if returnStmt.TokenLiteral() != "return"{
-			t.Errorf("returnStmt.TokenLiteral not 'return', got: %q",returnStmt.TokenLiteral())
+		if returnStmt.TokenLiteral() != "return" {
+			t.Errorf("returnStmt.TokenLiteral not 'return', got: %q", returnStmt.TokenLiteral())
 		}
 	}
 }
 
-func testLetStatement(t *testing.T, s ast.Statement, name string) bool{
-	if s.TokenLiteral() != "let"{
-		t.Errorf("s.TokenLiteral not: 'let'. got=%q",s.TokenLiteral())
+func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
+	if s.TokenLiteral() != "let" {
+		t.Errorf("s.TokenLiteral not: 'let'. got=%q", s.TokenLiteral())
 		return false
 	}
 
 	letStmt, ok := s.(*ast.LetStatement)
 	if !ok {
-		t.Errorf("s is not *ast.LetStatement. got=%T",s)
+		t.Errorf("s is not *ast.LetStatement. got=%T", s)
 		return false
 	}
 
-	if letStmt.Name.Value != name{
-		t.Fatalf("letStmt.Name.Value is not '%s'. got=%s",name, letStmt.Name.Value)
+	if letStmt.Name.Value != name {
+		t.Fatalf("letStmt.Name.Value is not '%s'. got=%s", name, letStmt.Name.Value)
 		return false
 	}
 

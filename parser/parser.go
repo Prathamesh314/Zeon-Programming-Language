@@ -47,8 +47,8 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	}
 
 	stmt.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
-	
-	if !p.expectPeek(token.ASSIGN){
+
+	if !p.expectPeek(token.ASSIGN) {
 		return nil
 	}
 
@@ -88,11 +88,11 @@ func (p *Parser) parseStatement() ast.Statement {
 	}
 }
 
-func (p *Parser) parseReturnStatement() *ast.ReturnStatement{
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	stmt := &ast.ReturnStatement{Token: p.curToken}
 	p.nextToken()
 
-	for !p.currTokenIs(token.SEMICOLON){
+	for !p.currTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
 	return stmt
