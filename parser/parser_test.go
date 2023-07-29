@@ -182,7 +182,6 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	}{
 		{"!5", "!", 5},
 		{"-15", "-", 15},
-		
 	}
 
 	for _, tt := range prefixTests {
@@ -251,9 +250,9 @@ func TestParsingInfixExpression(t *testing.T) {
 		{"5 < 5", 5, "<", 5},
 		{"5 == 5", 5, "==", 5},
 		{"5 != 5", 5, "!=", 5},
-		{"true == true",true, "==", true},
+		{"true == true", true, "==", true},
 		{"true != false", true, "!=", false},
-		{"false == false",false,"==",false},
+		{"false == false", false, "==", false},
 	}
 
 	for _, tt := range infixTests {
@@ -299,8 +298,6 @@ func TestParsingInfixExpression(t *testing.T) {
 	}
 }
 
-
-
 func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 	ident, ok := exp.(*ast.Identifier)
 	if !ok {
@@ -337,21 +334,20 @@ func testLiteralExpression(t *testing.T, exp ast.Expression, expected interface{
 func testBooleanLiteral(t *testing.T, exp ast.Expression, value bool) bool {
 	bo, ok := exp.(*ast.Boolean)
 	if !ok {
-	t.Errorf("exp not *ast.Boolean. got=%T", exp)
-	return false
+		t.Errorf("exp not *ast.Boolean. got=%T", exp)
+		return false
 	}
 	if bo.Value != value {
-	t.Errorf("bo.Value not %t. got=%t", value, bo.Value)
-	return false
+		t.Errorf("bo.Value not %t. got=%t", value, bo.Value)
+		return false
 	}
 	if bo.TokenLiteral() != fmt.Sprintf("%t", value) {
-	t.Errorf("bo.TokenLiteral not %t. got=%s",
-	value, bo.TokenLiteral())
-	return false
+		t.Errorf("bo.TokenLiteral not %t. got=%s",
+			value, bo.TokenLiteral())
+		return false
 	}
 	return true
-	}
-	
+}
 
 func testInfixExpression(t *testing.T, exp ast.Expression, left interface{}, operator string, right interface{}) bool {
 	opExp, ok := exp.(*ast.InfixExpression)
@@ -375,3 +371,4 @@ func testInfixExpression(t *testing.T, exp ast.Expression, left interface{}, ope
 
 	return true
 }
+
