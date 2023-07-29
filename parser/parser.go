@@ -55,6 +55,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
+	p.registerPrefix(token.ELSE,p.parseIfExpression)
 	p.nextToken()
 	p.nextToken()
 
@@ -79,8 +80,12 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	}
 
 	expression.Consequence = p.parseBlockStatement()
-	if !p.expectPeek(token.RBRACE) {
-		return nil
+	if p.peekTokenIs(token.ELSE){
+		p.nextToken()
+		if !p.expectPeek(token.LBRACE){
+			return nil
+		}
+		expression.Alternative = p.parseBlockStatement()
 	}
 
 	return expression
