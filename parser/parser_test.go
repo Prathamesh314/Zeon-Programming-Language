@@ -22,9 +22,9 @@ func checkParserErrors(t *testing.T, p *Parser) {
 
 func TestLetStatements(t *testing.T) {
 	input :=
-		`let x = 5
-	let y = 10
-	let foobar = 838383
+	`let x = 5;
+	let y = 10;
+	let foobar = 838383;
 	`
 
 	l := lexer.New(input)
@@ -99,6 +99,11 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 
 	if letStmt.Name.Value != name {
 		t.Fatalf("letStmt.Name.Value is not '%s'. got=%s", name, letStmt.Name.Value)
+		return false
+	}
+
+	if letStmt.Name.TokenLiteral() != name{
+		t.Errorf("s.Name not %s, got=%s",name,letStmt.Name)
 		return false
 	}
 
