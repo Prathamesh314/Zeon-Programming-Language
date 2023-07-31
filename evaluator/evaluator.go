@@ -45,7 +45,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return evalInfixExpression(node.Operator, left, right)
 	case *ast.BlockStatement:
-		return evalBlockStatements(node, env)
+		return evalStatements(node.Statements, env)
 	case *ast.IfExpression:
 		return evalIfExpression(node, env)
 	case *ast.LetStatement:
