@@ -368,8 +368,68 @@ var builtins = map[string]*object.BuiltIn{
 			switch arg := args[0].(type) {
 			case *object.String:
 				return &object.Integer{Value: int64(len(arg.Value))}
+			case *object.Array:
+				return &object.Integer{Value: int64(len(arg.Elements))}
 			default:
 				return newError("arguement to `len` not supported: got=%s", args[0].Type())
+			}
+		},
+	},
+
+	"first": &object.BuiltIn{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return newError("wrong number of arguements, got=%d, want=1", len(args))
+			}
+
+			if args[0].Type() != object.ARRAY_OBJ {
+				return newError("arguement to `first` must be an ARRAY, got=%T", args[0].Type())
+			}
+
+			arr := args[0].(*object.Array)
+			if len(arr.Elements) > 0 {
+				return arr.Elements[0]
+			}
+
+			return NULL
+		},
+	},
+
+	"last": &object.BuiltIn{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return newError("wrong number of arguements, got=%d want=1", len(args))
+			}
+
+			if args[0].Type() != object.ARRAY_OBJ {
+				return newError("arguement to `last` must be an ARRAY, got=%T", args[0].Type())
+			}
+
+			arr := args[0].(*object.Array)
+			max := len(arr.Elements)
+			if max > 0 {
+				return arr.Elements[max-1]
+			}
+			return NULL
+		},
+	},
+
+	"reverse": &object.BuiltIn{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return newError("wrong number of Arguements, got=%d but want=1", len(args))
+			}
+
+			switch {
+			case args[0].Type() == object.STRING_OBJ:
+				var result = ""
+				var s = args[0].(*object.String).Value
+				for _, v := range s {
+					result = string(v) + result
+				}
+				return &object.String{Value: result}
+			default:
+				return newError("Invalid Type of reverse, got=%T, want=STRING", args[0].Type())
 			}
 		},
 	},
