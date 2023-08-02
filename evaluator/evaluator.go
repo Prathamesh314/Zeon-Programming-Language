@@ -383,7 +383,7 @@ var builtins = map[string]*object.BuiltIn{
 			}
 
 			if args[0].Type() != object.ARRAY_OBJ {
-				return newError("arguement to `first` must be an ARRAY, got=%T", args[0].Type())
+				return newError("arguement to `first` must be an ARRAY, got=%s", args[0].Type())
 			}
 
 			arr := args[0].(*object.Array)
@@ -402,7 +402,7 @@ var builtins = map[string]*object.BuiltIn{
 			}
 
 			if args[0].Type() != object.ARRAY_OBJ {
-				return newError("arguement to `last` must be an ARRAY, got=%T", args[0].Type())
+				return newError("arguement to `last` must be an ARRAY, got=%s", args[0].Type())
 			}
 
 			arr := args[0].(*object.Array)
@@ -450,8 +450,110 @@ var builtins = map[string]*object.BuiltIn{
 				}
 				return &object.Array{Elements: arr}
 			default:
-				return newError("Invalid Type of reverse, got=%T, want=STRING", args[0].Type())
+				return newError("Invalid Type of reverse, got=%s, want=STRING", args[0].Type())
 			}
 		},
 	},
+
+	"rest": &object.BuiltIn{
+		Fn: func(args ...object.Object) object.Object {
+			switch {
+			case args[0].Type() == object.STRING_OBJ:
+				if len(args) != 1 {
+					return newError("wrong number of arguements, got=%d but want=1", len(args))
+				}
+
+				str := args[0].(*object.String).Value
+				if len(str) > 0 {
+					return &object.String{Value: str[1:]}
+				}
+				return NULL
+			case args[0].Type() == object.ARRAY_OBJ:
+				if len(args) != 1 {
+					return newError("wrong number of arguements, got=%d but want=1", len(args))
+				}
+
+				arr := args[0].(*object.Array)
+				length := len(arr.Elements)
+				if length != 0 {
+					newArr := make([]object.Object, length-1, length-1)
+					copy(newArr, arr.Elements[1:length])
+					return &object.Array{Elements: newArr}
+				}
+				return NULL
+
+			default:
+				return newError("Invalid input for `rest`, got=%s", args[0].Type())
+			}
+		},
+	},
+
+	"exp": &object.BuiltIn{
+		Fn: func(args ...object.Object) object.Object {
+			switch {
+			case args[0].Type() == object.INTEGER_OBJ && args[1].Type() == object.INTEGER_OBJ:
+				if len(args) != 2 {
+					return newError("wrong number of arguements, got=%d but want=2", len(args))
+				}
+				num1 := args[0].(*object.Integer).Value
+				num2 := args[1].(*object.Integer).Value
+
+				ans := Pow(int(num1), int(num2))
+
+				return &object.Integer{Value: int64(ans)}
+			default:
+				return newError("Invalid input for `exp`, got=%s and %s, want=INTEGER", args[0].Type(), args[1].Type())
+			}
+		},
+	},
+
+	"push": &object.BuiltIn{
+		Fn: func(args ...object.Object) object.Object {
+			switch {
+			case args[0].Type() == object.ARRAY_OBJ:
+				if len(args) != 2 {
+					return newError("wrong number of arguements, got=%d but want=2", len(args))
+				}
+
+				arr := args[0].(*object.Array).Elements
+				length := len(arr)
+				newArr := make([]object.Object, length+1, length+1)
+				copy(newArr, arr)
+				newArr[length] = args[1]
+				return &object.Array{Elements: newArr}
+			default:
+				return newError("Invalid input for `push`, got=%s, but want=ARRAY", args[0].Type())
+			}
+		},
+	},
+
+	"pop": &object.BuiltIn{
+		Fn: func(args ...object.Object) object.Object {
+			switch {
+			case args[0].Type() == object.ARRAY_OBJ:
+				if len(args) != 1 {
+					return newError("wrong number of arguements, got=%d but want=1", len(args))
+				}
+
+				arr := args[0].(*object.Array)
+				length := len(arr.Elements)
+				if length == 0 {
+					return newError("Array is Empty")
+				}
+				newArr := make([]object.Object, length-1, length-1)
+				copy(newArr, arr.Elements[0:length-1])
+				return &object.Array{Elements: newArr}
+			default:
+				return newError("Invalid input for `pop`, got=%s but want=ARRAY", args[0].Type())
+			}
+		},
+	},
+}
+
+func Pow(n int, pow int) int {
+	var result = 1
+	if pow != 0 {
+		result = (n * Pow(n, pow-1))
+	}
+	return result
 }
