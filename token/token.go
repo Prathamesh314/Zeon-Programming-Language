@@ -50,6 +50,8 @@ const (
 	RPAREN    = ")"
 	LBRACE    = "{"
 	RBRACE    = "}"
+	LBRACKET  = "["
+	RBRACKET  = "]"
 
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
@@ -58,5 +60,5 @@ const (
 	FALSE    = "FALSE"
 	IF       = "IF"
 	ELSE     = "ELSE"
-	STRING 	 = "STRING"
+	STRING   = "STRING"
 )
