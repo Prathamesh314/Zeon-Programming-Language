@@ -428,6 +428,27 @@ var builtins = map[string]*object.BuiltIn{
 					result = string(v) + result
 				}
 				return &object.String{Value: result}
+			case args[0].Type() == object.INTEGER_OBJ:
+				var ans = int64(0)
+				var our_num = args[0].(*object.Integer).Value
+				for our_num > 0 {
+					var r = our_num % 10
+					ans = ans*10 + r
+					our_num = our_num / 10
+				}
+				return &object.Integer{Value: int64(ans)}
+			case args[0].Type() == object.ARRAY_OBJ:
+				arr := args[0].(*object.Array).Elements
+				var i = 0
+				var j = len(arr) - 1
+				for i < j {
+					var temp = arr[i]
+					arr[i] = arr[j]
+					arr[j] = temp
+					i += 1
+					j -= 1
+				}
+				return &object.Array{Elements: arr}
 			default:
 				return newError("Invalid Type of reverse, got=%T, want=STRING", args[0].Type())
 			}
