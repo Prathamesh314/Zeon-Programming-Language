@@ -70,6 +70,7 @@ func New(l *lexer.Lexer) *Parser {
 
 func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
 	exp := &ast.IndexExpression{Token: p.curToken, Left: left}
+	p.nextToken()
 
 	exp.Index = p.parseExpression(LOWEST)
 
@@ -116,7 +117,7 @@ func (p *Parser) parseStringLiteral() ast.Expression {
 
 func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
 	exp := &ast.CallExpression{Token: p.curToken, Function: function}
-	exp.Arguements = p.parseExpressionList(token.RBRACKET)
+	exp.Arguements = p.parseExpressionList(token.RPAREN)
 	return exp
 }
 
